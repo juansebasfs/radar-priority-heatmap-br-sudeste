@@ -1,0 +1,89 @@
+Visão geral
+
+HTML interativo que cruza:
+
+Heatmaps de acidentes (feridos e mortos), com camadas por UF (SP, RJ, ES, MG) e camadas combinadas.
+
+Pontos de “Radares Propostos” (arquivo do modelo), com:
+
+cores (gradiente azul → vermelho de 0 a 100),
+
+filtros por UF,
+
+slice (limiar mínimo) para Eficiência (prob_alta_eficacia) e dois modos de filtro para Prioridade (indice_prioridade_norm): Mínimo (≥ valor) ou Top % (percentil nas UFs selecionadas),
+
+contador de radares visíveis (após filtros),
+
+popup com UF, Eficácia, Prioridade, BR, KM e ID.
+
+O mapa já abre enquadrado no Sudeste (SP, RJ, ES, MG).
+
+Requisitos (instalação)
+pip install pandas numpy folium
+
+
+Python 3.9+ recomendado. Codificação UTF-8 nos CSVs.
+
+Entradas (CSV)
+1) Acidentes (pré-processado para heatmap)
+
+Colunas (nomes aceitos em minúsculas/maiúsculas, o script normaliza):
+
+ANO_DADOS, br, feridos, km, latitude, longitude, mortos, municipio, uf
+
+Regras:
+
+UF ∈ {SP, RJ, ES, MG}
+
+BR (se quiser reforçar o filtro no mapa) ∈ {40,50,101,116,135,146,153,251,259,262,267,354,356,364,365,381,393,447,452,459,460,465,474,488,493,495,601}
+
+latitude/longitude válidas (numéricas; vírgula decimal será convertida).
+
+Se você já tem um CSV preparado (ex.: acidentes_heatmap_ready_v4.csv), pode usar direto.
+
+2) Radares Propostos (modelo)
+
+Colunas necessárias (o script tenta reconhecer equivalentes):
+
+Coordenadas: trecho_latitude_central e trecho_longitude_central
+(se vier como latitude / longitude, o script detecta e usa)
+
+UF: uf
+
+Índices: prob_alta_eficacia (0–100), indice_prioridade_norm (0–100)
+
+Campos extras p/ popup: br, trecho_km_final, id_trecho (se ausentes, o script deixa vazio)
+
+Saída
+
+Um arquivo HTML (ex.: heatmap_acidentes_sudeste_com_radares.html) contendo:
+
+Camadas de heatmap por UF e combinadas (Feridos/Mortos),
+
+Painel “Radares Propostos” com:
+
+checkboxes por UF,
+
+slider Eficiência (0–100) → mostra apenas ≥ valor escolhido,
+
+filtro de Prioridade em dois modos (Mínimo / Top %),
+
+seletor para colorir por Eficácia / Prioridade / Ocultar,
+
+contador de radares visíveis (após filtros),
+
+Popups com UF, Eficácia, Prioridade, BR, KM, ID.
+
+Como executar
+
+Salve o código abaixo como, por exemplo, gerar_mapa_radares.py.
+
+Rode:
+
+python gerar_mapa_radares.py \
+  --acidentes /caminho/acidentes_heatmap_ready_v4.csv \
+  --radares   /caminho/trechos_heatmap_enriquecido_norm.csv \
+  --saida     heatmap_acidentes_sudeste_com_radares.html
+
+
+Abra o HTML gerado no navegador.
